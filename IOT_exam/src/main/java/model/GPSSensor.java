@@ -22,7 +22,7 @@ public class GPSSensor {
         coordinates[2] = random.nextDouble(29029);
     }
 
-    private double getBattery()
+    public double getBattery()
     {
         return battery.getCharge();
     }
