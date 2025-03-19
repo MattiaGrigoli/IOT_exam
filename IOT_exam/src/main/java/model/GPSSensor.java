@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class GPSSensor {
-    private Random random;
+    private transient Random random;
     private double coordinates[]; //latitude,longitude and altitude
     private BatterySensor battery;
 

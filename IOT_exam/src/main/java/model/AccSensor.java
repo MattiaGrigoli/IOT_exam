@@ -3,7 +3,7 @@ package model;
 import java.util.Random;
 
 public class AccSensor {
-    private Random random;
+    private transient Random random;
     private double acceleration;
     private BatterySensor battery;
 

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class HeartSensor {
 
-    private Random random;
+    private transient Random random;
     private byte heartRate;
     private BatterySensor battery;
 

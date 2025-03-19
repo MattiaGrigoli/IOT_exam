@@ -5,7 +5,6 @@ import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import model.MessageDescriptor;
 
 public class Producer {
     protected final static Logger logger = LoggerFactory.getLogger(Producer.class);
@@ -20,18 +19,6 @@ public class Producer {
 
     public static void main(String[] args) {}
 
-    public static MessageDescriptor parseJsonMessage(byte[] payload) {
-
-        try {
-
-            Gson gson = new Gson();
-            return (MessageDescriptor)gson.fromJson(new String(payload), MessageDescriptor.class);
-
-        }catch(Exception e) {
-            return null;
-        }
-
-    }
     public static String buildJsonMessage(double sensorValue) {
         return "";
     }

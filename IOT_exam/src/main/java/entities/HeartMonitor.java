@@ -1,6 +1,7 @@
 package entities;
 
 import base.Producer;
+import com.google.gson.Gson;
 import model.HeartSensor;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -11,7 +12,6 @@ import java.util.UUID;
 public class HeartMonitor extends Producer {
     private static final String IDuser = "1"; // just for testing purpose
     private static final String TOPIC = IDuser + "/sensor/heartMonitor";
-    private static final String BATTERY_TOPIC = TOPIC + "/battery" ;
 
     public static void main(String[] args) {
         logger.info("Auth SimpleProducer started ...");
@@ -50,11 +50,10 @@ public class HeartMonitor extends Producer {
             //Start to publish MESSAGE_COUNT messages
             for(int i = 0; i < MESSAGE_COUNT; i++) {
 
-                //Send data as simple numeric value
+                //Store data for debug and create new values
                 double sensorValue = heartSensor.getHeartRate();
                 double battery = heartSensor.getBattery();
-                String payloadStringGPS = Double.toString(sensorValue);
-                String payloadStringBat = Double.toString(battery);
+                Gson gson = new Gson();
 
                 // TODO: make publish data, look into doing two sensor values...
 
@@ -62,8 +61,7 @@ public class HeartMonitor extends Producer {
                 //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
                 //to the correct topic root associated to the authenticated user
                 //Eg. /iot/user/000001/sensor/temperature
-                publishData(client, BASE_TOPIC + TOPIC, payloadStringGPS);
-                publishData(client, BASE_TOPIC + BATTERY_TOPIC, payloadStringBat);
+                publishData(client, BASE_TOPIC + TOPIC, gson.toJson(heartSensor));
 
                 //Sleep for 1 Second
                 Thread.sleep(1000);
@@ -87,7 +85,7 @@ public class HeartMonitor extends Producer {
 
             MqttMessage msg = new MqttMessage(msgString.getBytes());
             msg.setQos(0);
-            msg.setRetained(topic.contains("battery"));
+            msg.setRetained(false);
             mqttClient.publish(topic,msg);
 
             logger.debug("(If Authorized by Broker ACL) Data Correctly Published !");

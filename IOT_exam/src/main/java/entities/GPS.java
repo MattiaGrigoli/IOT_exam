@@ -1,6 +1,7 @@
 package entities;
 
 import base.Producer;
+import com.google.gson.Gson;
 import model.GPSSensor;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -11,7 +12,6 @@ import java.util.UUID;
 public class GPS extends Producer {
     private static final String IDuser = "1"; // just for testing purpose
     private static final String TOPIC = IDuser + "/sensor/GPS";
-    private static final String BATTERY_TOPIC = TOPIC + "/battery" ;
 
     public static void main(String[] args) {
         logger.info("Auth SimpleProducer started ...");
@@ -50,20 +50,16 @@ public class GPS extends Producer {
             //Start to publish MESSAGE_COUNT messages
             for(int i = 0; i < MESSAGE_COUNT; i++) {
 
-                //Send data as simple numeric value
+                //Store data for debug and create new values
                 double[] sensorValue = gpsSensor.getCoordinates();
                 double battery = gpsSensor.getBattery();
-                String payloadStringGPS = Arrays.toString(sensorValue);
-                String payloadStringBat = Double.toString(battery);
-
-                // TODO: make publish data, look into doing two sensor values...
+                Gson gson = new Gson();
 
                 //Internal Method to publish MQTT data using the created MQTT Client
                 //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
                 //to the correct topic root associated to the authenticated user
                 //Eg. /iot/user/000001/sensor/temperature
-                publishData(client, BASE_TOPIC + TOPIC, payloadStringGPS);
-                publishData(client, BASE_TOPIC + BATTERY_TOPIC, payloadStringBat);
+                publishData(client, BASE_TOPIC + TOPIC, gson.toJson(gpsSensor));
 
                 //Sleep for 1 Second
                 Thread.sleep(1000);

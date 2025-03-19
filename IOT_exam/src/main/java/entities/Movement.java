@@ -1,6 +1,7 @@
 package entities;
 
 import base.Producer;
+import com.google.gson.Gson;
 import model.MovementSensor;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -10,9 +11,6 @@ import java.util.UUID;
 public class Movement extends Producer{
     private static final String IDuser = "1"; // just for testing purpose
     private static final String TOPIC = IDuser + "/sensor/movement";
-    private static final String BATTERY_TOPIC = TOPIC + "/battery" ;
-    private static final String STEPS_TOPIC = TOPIC + "/steps";
-    private static final String TECHNIQUE_TOPIC = TOPIC + "/technique";
 
     public static void main(String[] args) {
         logger.info("Auth SimpleProducer started ...");
@@ -51,13 +49,12 @@ public class Movement extends Producer{
             //Start to publish MESSAGE_COUNT messages
             for(int i = 0; i < MESSAGE_COUNT; i++) {
 
-                //Send data as simple numeric value
+                //store data for debug reason and create new values
                 double stepsValue = movSensor.getSteps();
                 double battery = movSensor.getBattery();
                 boolean techniqueValue = movSensor.isTechnique();
-                String payloadStringSteps = Double.toString(stepsValue);
-                String payloadStringBat = Double.toString(battery);
-                String payloadStringTech = techniqueValue ? "1" : "0";
+
+                Gson gson = new Gson();
 
                 // TODO: make publish only when the value is changed on some
 
@@ -65,9 +62,7 @@ public class Movement extends Producer{
                 //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
                 //to the correct topic root associated to the authenticated user
                 //Eg. /iot/user/000001/sensor/temperature
-                publishData(client, BASE_TOPIC + STEPS_TOPIC, payloadStringSteps);
-                publishData(client, BASE_TOPIC + BATTERY_TOPIC, payloadStringBat);
-                publishData(client, BASE_TOPIC + TECHNIQUE_TOPIC, payloadStringTech);
+                publishData(client, BASE_TOPIC + TOPIC, gson.toJson(movSensor));
 
                 //Sleep for 1 Second
                 Thread.sleep(1000);
@@ -90,7 +85,7 @@ public class Movement extends Producer{
 
             MqttMessage msg = new MqttMessage(msgString.getBytes());
             msg.setQos(0);
-            msg.setRetained(topic.contains("battery") || topic.contains("technique"));
+            msg.setRetained(false);
             mqttClient.publish(topic,msg);
 
             logger.debug("(If Authorized by Broker ACL) Data Correctly Published !");

@@ -3,7 +3,7 @@ package model;
 import java.util.Random;
 
 public class MovementSensor {
-    private Random random;
+    private transient Random random;
     private boolean technique; //good or bad
     private double steps; //steps/min
     private BatterySensor battery;
