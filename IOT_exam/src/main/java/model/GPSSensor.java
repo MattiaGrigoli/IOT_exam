@@ -15,11 +15,11 @@ public class GPSSensor {
         this.battery = new BatterySensor();
     }
 
-    private void generateCoordinates()
+    public void generateCoordinates()
     {
-        coordinates[0] = random.nextDouble(-90, 90);
-        coordinates[1] = random.nextDouble(360);
-        coordinates[2] = random.nextDouble(29029);
+        coordinates[0] = (-90) + (90 - (-90)) *random.nextDouble();
+        coordinates[1] = random.nextDouble() * 360;
+        coordinates[2] = random.nextDouble() * 29029;
     }
 
     public double getBattery()
@@ -28,9 +28,10 @@ public class GPSSensor {
     }
 
     public double[] getCoordinates() {
-        generateCoordinates();
         return coordinates;
     }
+
+    public void generateBattery() {battery.generateCharge();}
 
     @Override
     public String toString() {

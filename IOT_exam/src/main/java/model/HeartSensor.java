@@ -14,10 +14,9 @@ public class HeartSensor {
         this.battery = new BatterySensor();
     }
 
-    private void generateHeartRate() { heartRate = (byte) (60+random.nextInt(100)); }
+    public void generateHeartRate() { heartRate = (byte) (60+random.nextInt(100)); }
 
     public byte getHeartRate() {
-        generateHeartRate();
         return heartRate;
     }
 
@@ -25,6 +24,7 @@ public class HeartSensor {
         return battery.getCharge();
     }
 
+    public void generateBattery() {battery.generateCharge();}
     @Override
     public String toString() {
         return "HeartSensor{" +

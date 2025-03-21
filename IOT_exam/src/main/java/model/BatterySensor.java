@@ -11,13 +11,12 @@ public class BatterySensor {
         this.charge = 0;
     }
 
-    private void generateCharge ()
+    public void generateCharge ()
     {
-        charge = random.nextDouble(100);
+        charge = random.nextDouble()*100;
     }
 
     public double getCharge() {
-        generateCharge();
         return charge;
     }
 

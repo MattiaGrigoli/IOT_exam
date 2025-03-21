@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class MovementSensor {
     private transient Random random;
-    private boolean technique; //good or bad
+    private boolean technique; //good == true or bad == false
     private double steps; //steps/min
     private BatterySensor battery;
 
@@ -15,23 +15,21 @@ public class MovementSensor {
         this.battery = new  BatterySensor();
     }
 
-    private void generateTechinque()
+    public void generateTechinque()
     {
         technique = random.nextBoolean();
     }
 
-    private void generateSteps()
+    public void generateSteps()
     {
-        steps = random.nextDouble(60,250);
+        steps = 60 + (250 - 60) * random.nextDouble();
     }
 
     public boolean isTechnique() {
-        generateTechinque();
         return technique;
     }
 
     public double getSteps() {
-        generateSteps();
         return steps;
     }
 
@@ -39,6 +37,7 @@ public class MovementSensor {
         return battery.getCharge();
     }
 
+    public void generateBattery() {battery.generateCharge();}
     @Override
     public String toString() {
         return "MovementSensor{" +

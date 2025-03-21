@@ -10,10 +10,33 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class HeartMonitor extends Producer {
-    private static final String IDuser = "1"; // just for testing purpose
-    private static final String TOPIC = IDuser + "/sensor/heartMonitor";
+    private final String IDuser = "1"; // just for testing purpose
+    private static final String TOPIC = "/sensor/heartMonitor";
 
     public static void main(String[] args) {
+        new  HeartMonitor().run();
+    }
+
+    public static void publishData(IMqttClient mqttClient, String topic, String msgString) throws MqttException {
+        logger.debug("Publishing to Topic: {} Data: {}", topic, msgString);
+
+        if (mqttClient.isConnected() && msgString != null && topic != null) {
+
+            MqttMessage msg = new MqttMessage(msgString.getBytes());
+            msg.setQos(0);
+            msg.setRetained(false);
+            mqttClient.publish(topic,msg);
+
+            logger.debug("(If Authorized by Broker ACL) Data Correctly Published !");
+        }
+        else{
+            logger.error("Error: Topic or Msg = Null or MQTT Client is not Connected !");
+        }
+
+    }
+
+    private void run()
+    {
         logger.info("Auth SimpleProducer started ...");
 
         try{
@@ -51,17 +74,16 @@ public class HeartMonitor extends Producer {
             for(int i = 0; i < MESSAGE_COUNT; i++) {
 
                 //Store data for debug and create new values
-                double sensorValue = heartSensor.getHeartRate();
-                double battery = heartSensor.getBattery();
+                heartSensor.generateHeartRate();
+                heartSensor.generateBattery();
                 Gson gson = new Gson();
 
-                // TODO: make publish data, look into doing two sensor values...
 
                 //Internal Method to publish MQTT data using the created MQTT Client
                 //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
                 //to the correct topic root associated to the authenticated user
                 //Eg. /iot/user/000001/sensor/temperature
-                publishData(client, BASE_TOPIC + TOPIC, gson.toJson(heartSensor));
+                publishData(client, BASE_TOPIC + "/" + IDuser + TOPIC, gson.toJson(heartSensor));
 
                 //Sleep for 1 Second
                 Thread.sleep(1000);
@@ -76,23 +98,5 @@ public class HeartMonitor extends Producer {
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    public static void publishData(IMqttClient mqttClient, String topic, String msgString) throws MqttException {
-        logger.debug("Publishing to Topic: {} Data: {}", topic, msgString);
-
-        if (mqttClient.isConnected() && msgString != null && topic != null) {
-
-            MqttMessage msg = new MqttMessage(msgString.getBytes());
-            msg.setQos(0);
-            msg.setRetained(false);
-            mqttClient.publish(topic,msg);
-
-            logger.debug("(If Authorized by Broker ACL) Data Correctly Published !");
-        }
-        else{
-            logger.error("Error: Topic or Msg = Null or MQTT Client is not Connected !");
-        }
-
     }
 }

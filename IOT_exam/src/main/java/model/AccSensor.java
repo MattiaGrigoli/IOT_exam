@@ -6,6 +6,7 @@ public class AccSensor {
     private transient Random random;
     private double acceleration;
     private BatterySensor battery;
+    private int min = -10, max = 10;
 
     public AccSensor() {
         this.random = new Random(System.currentTimeMillis());
@@ -13,19 +14,20 @@ public class AccSensor {
         this.battery = new BatterySensor();
     }
 
-    private void generateAcceleration()
+    public void generateAcceleration()
     {
-        acceleration = random.nextDouble(-10,10); //bounds from gemini, more than 5 is emergency
+        acceleration = min + (max - min ) * random.nextDouble(); //bounds from gemini, more than 5 is emergency
     }
 
     public double getAcceleration() {
-        generateAcceleration();
         return acceleration;
     }
 
     public double getBattery() {
         return battery.getCharge();
     }
+
+    public void generateBattery() {battery.generateCharge();}
 
     @Override
     public String toString() {

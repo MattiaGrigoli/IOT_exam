@@ -14,7 +14,7 @@ public class Producer {
     protected static final int MESSAGE_COUNT = 1000;
     protected static final String USERNAME = "298884@studenti.unimore.it";
     protected static final String PASSWORD = "lgkuqugjkdwzrrjj";
-    protected static final String BASE_TOPIC = "/iot/user/" + USERNAME + "/";
+    protected static final String BASE_TOPIC = "/iot/user/" + USERNAME;
     protected static final String BROKER_URL = "tcp://" + BROKER_ADDRESS + ":" + BROKER_PORT;
 
     public static void main(String[] args) {}
