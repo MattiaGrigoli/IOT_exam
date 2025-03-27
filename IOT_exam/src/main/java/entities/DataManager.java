@@ -57,7 +57,7 @@ public class DataManager extends Consumer {
             client.subscribe(MQTT_BASIC_TOPIC + TOPIC, (topic, msg) -> {
 
                 Gson gson = new Gson();
-                logger.info("Message received");
+                //logger.info("Message received");
                 //The topic variable contain the specific topic associated to the received message. Using MQTT wildcards
                 //messaged from multiple and different topic can be received with the same subscription
                 //The msg variable is a MqttMessage object containing all the information about the received message
@@ -72,6 +72,7 @@ public class DataManager extends Consumer {
                 {
                     GPSSensor gps = gson.fromJson(json,GPSSensor.class);
                     stat.get(ID).setCoordinates(gps.getCoordinates());
+                    stat.get(ID).setBattery(1, gps.getBattery());
                 }else if(topic.contains("heartMonitor"))
                 {
                     HeartSensor heartMonitor = gson.fromJson(json,HeartSensor.class);
@@ -79,13 +80,15 @@ public class DataManager extends Consumer {
                     sumheart += heartMonitor.getHeartRate();
                     countheart++;
                     stat.get(ID).setMeansbeats(sumheart / countheart);
+                    stat.get(ID).setBattery(2, heartMonitor.getBattery());
                 }else if(topic.contains("accelerometer"))
                 {
                     AccSensor  accSensor = gson.fromJson(json,AccSensor.class);
                     stat.get(ID).setAcceleration(accSensor.getAcceleration());
                     sumacc += accSensor.getAcceleration();
                     countacc++;
-                    stat.get(ID).setMeansbeats(sumacc / countacc);
+                    stat.get(ID).setMeanacc(sumacc / countacc);
+                    stat.get(ID).setBattery(0, accSensor.getBattery());
                 }else if(topic.contains("movement"))
                 {
                     MovementSensor movementSensor = gson.fromJson(json,MovementSensor.class);
@@ -93,12 +96,14 @@ public class DataManager extends Consumer {
                     stat.get(ID).setTechnique(movementSensor.isTechnique());
                     sumstep += movementSensor.getSteps();
                     countstep++;
-                    stat.get(ID).setMeansbeats(sumstep / countstep);
+                    stat.get(ID).setMeanstep(sumstep / countstep);
+                    stat.get(ID).setBattery(3, movementSensor.getBattery());
                 } else{
                     logger.error("invalid subscribe topic, sensor not found {}", topic );
                 }
-                // TODO: populate battery stat
+
                 String jsonSend = gson.toJson(stat.get(ID));
+                logger.info(jsonSend);
                 client.publish(MQTT_BASIC_TOPIC+ "/" + ID + PUBLISH_TOPIC, new MqttMessage(jsonSend.getBytes()));
             });
         }catch(Exception e){

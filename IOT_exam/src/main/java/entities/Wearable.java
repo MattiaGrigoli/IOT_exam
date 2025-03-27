@@ -60,22 +60,34 @@ public class Wearable extends Consumer {
                 Gson gson = new Gson();
                 battery.generateCharge();
                 double charge = battery.getCharge();
-                logger.info("message received ");
-                logger.info(msg.toString());
+                //logger.info("message received ");
+                //logger.info(msg.toString());
                 Statitics stat =  gson.fromJson(msg.toString(), Statitics.class); // gets stuck here
                 logger.info(stat.toString());
                 if(stat.getHeartRate() > 150 && stat.getSteps() > 100){
                     logger.warn("BEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEP");
                     logger.warn("heart rate too high, take a break!");
                 }
-                // iteration for the batteries
-                Enumeration<String> keys = stat.getBatteries().keys();
-                while (keys.hasMoreElements()) {
-                    String key = keys.nextElement();
-                    if(stat.getBatteries().get(key) <= 20)
+                for(int i =0; i < 4; i++)
+                {
+                    if(stat.getBatteries()[i] < 20)
                     {
-                        logger.warn("BEEP");
-                        logger.warn("the sensor {} has low battery!", key);
+                        logger.warn("BEEEP");
+                        switch(i)
+                        {
+                            case 0:
+                                logger.warn("the battery of the acceleration sensor is low!");
+                                break;
+                            case 1:
+                                logger.warn("the battery of the gps sensor is low!");
+                                break;
+                            case 2:
+                                logger.warn("the battery of the heart monitor is low!");
+                                break;
+                            case 3:
+                                logger.warn("the battery of the movement sensor is low!");
+                                break;
+                        }
                     }
                 }
                 //for the wearable

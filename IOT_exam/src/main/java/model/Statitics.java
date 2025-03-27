@@ -6,7 +6,7 @@ import java.util.Hashtable;
 
 // just a class for the Json to send to the wearable containing all statistics
 public class Statitics {
-    private Dictionary<String, Double> batteries;
+    private double[] batteries;
     private double acceleration;
     private double[] coordinates;
     private byte heartRate;
@@ -15,7 +15,7 @@ public class Statitics {
     private double[] means; //heart, steps and acceleration
 
     public Statitics() {
-        batteries = new Hashtable<String, Double>();
+        batteries = new double[4]; // acceleration, gps, heart, movement
         coordinates = new double[3];
         heartRate = 0;
         steps = 0;
@@ -23,11 +23,16 @@ public class Statitics {
         technique = true;
     }
 
-    public Dictionary<String, Double> getBatteries() {
+    public void setBattery(int id, double value)
+    {
+        this.batteries[id] = value;
+    }
+
+    public double[] getBatteries() {
         return batteries;
     }
 
-    public void setBatteries(Dictionary<String, Double> batteries) {
+    public void setBatteries(double[] batteries) {
         this.batteries = batteries;
     }
 
@@ -92,7 +97,7 @@ public class Statitics {
     @Override
     public String toString() {
         return "Statitics{" +
-                "batteries=" + batteries +
+                "batteries=" + Arrays.toString(batteries) +
                 ", acceleration=" + acceleration +
                 ", coordinates=" + Arrays.toString(coordinates) +
                 ", heartRate=" + heartRate +
