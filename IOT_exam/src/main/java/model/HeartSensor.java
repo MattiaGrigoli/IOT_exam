@@ -5,7 +5,7 @@ import java.util.Random;
 public class HeartSensor {
 
     private transient Random random;
-    private byte heartRate;
+    private int heartRate;
     private BatterySensor battery;
 
     public HeartSensor() {
@@ -14,9 +14,14 @@ public class HeartSensor {
         this.battery = new BatterySensor();
     }
 
-    public void generateHeartRate() { heartRate = (byte) (60+random.nextInt(100)); }
+    public void generateHeartRate() {
+        heartRate = 60+random.nextInt(140);
+        if(heartRate < 0){
+            heartRate = heartRate * (-1);
+        }
+    }
 
-    public byte getHeartRate() {
+    public int getHeartRate() {
         return heartRate;
     }
 

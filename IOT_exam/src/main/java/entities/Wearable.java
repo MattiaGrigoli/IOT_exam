@@ -17,7 +17,7 @@ public class Wearable extends Consumer {
     private final String ID = "1";
     private static final String TOPIC = "/datamanager";
     private BatterySensor battery;
-    // TODO: add battery (change everything in non static)
+    private Statitics oldStat = new Statitics();
 
     public static void main(String[] args) {
         new  Wearable().run();
@@ -56,21 +56,24 @@ public class Wearable extends Consumer {
 
             logger.info("Connected !");
             logger.info(MQTT_BASIC_TOPIC + "/" + ID + TOPIC);
+
+
             client.subscribe(MQTT_BASIC_TOPIC + "/" + ID + TOPIC, (topic, msg) -> {
                 Gson gson = new Gson();
                 battery.generateCharge();
                 double charge = battery.getCharge();
                 //logger.info("message received ");
                 //logger.info(msg.toString());
-                Statitics stat =  gson.fromJson(msg.toString(), Statitics.class); // gets stuck here
-                logger.info(stat.toString());
+                Statitics stat =  gson.fromJson(msg.toString(), Statitics.class);
+                logger.info(stat.print());
+                logger.info("wearable battery :" + battery.getCharge());
                 if(stat.getHeartRate() > 150 && stat.getSteps() > 100){
                     logger.warn("BEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEP");
                     logger.warn("heart rate too high, take a break!");
                 }
                 for(int i =0; i < 4; i++)
                 {
-                    if(stat.getBatteries()[i] < 20)
+                    if(stat.getBatteries()[i] < 20 &&  stat.getBatteries()[i] > 0 && oldStat.getBatteries()[i] != stat.getBatteries()[i])
                     {
                         logger.warn("BEEEP");
                         switch(i)
@@ -97,12 +100,12 @@ public class Wearable extends Consumer {
                     logger.warn("the wearable has low battery");
                 }
 
-                if(!stat.isTechnique())
+                if(!stat.isTechnique() && oldStat.isTechnique() != stat.isTechnique())
                 {
                     logger.warn("BEEP");
                     logger.warn("your technique is wrong!");
                 }
-
+                oldStat = stat;
             });
         }catch (Exception e){
             e.printStackTrace();

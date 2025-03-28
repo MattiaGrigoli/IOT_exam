@@ -6,7 +6,7 @@ public class AccSensor {
     private transient Random random;
     private double acceleration;
     private BatterySensor battery;
-    private int min = -10, max = 10;
+    private int min = -5, max = 10;
 
     public AccSensor() {
         this.random = new Random(System.currentTimeMillis());

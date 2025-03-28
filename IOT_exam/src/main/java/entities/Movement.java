@@ -72,9 +72,9 @@ public class Movement extends Producer{
             for(int i = 0; i < MESSAGE_COUNT; i++) {
 
                 //store data for debug reason and create new values
-                double stepsValue = movSensor.getSteps();
-                double battery = movSensor.getBattery();
-                boolean techniqueValue = movSensor.isTechnique();
+                movSensor.generateBattery();
+                movSensor.generateSteps();
+                movSensor.generateTechinque();
 
                 Gson gson = new Gson();
 

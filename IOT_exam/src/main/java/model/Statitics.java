@@ -9,7 +9,7 @@ public class Statitics {
     private double[] batteries;
     private double acceleration;
     private double[] coordinates;
-    private byte heartRate;
+    private int heartRate;
     private boolean technique;
     private double steps;
     private double[] means; //heart, steps and acceleration
@@ -52,11 +52,11 @@ public class Statitics {
         this.coordinates = coordinates;
     }
 
-    public byte getHeartRate() {
+    public int getHeartRate() {
         return heartRate;
     }
 
-    public void setHeartRate(byte heartRate) {
+    public void setHeartRate(int heartRate) {
         this.heartRate = heartRate;
     }
 
@@ -105,5 +105,26 @@ public class Statitics {
                 ", steps=" + steps +
                 ", means=" + Arrays.toString(means) +
                 '}';
+    }
+
+    public String print() {
+        return "Statitics{" +
+                "\nbatteries=" +
+                    "\n\t{\n\tacceleration sensor=" + batteries[0] +
+                    "\n\tgps sensor=" + batteries[1] +
+                    "\n\theart monitor="  + batteries[2] +
+                    "\n\tmovement sensor=" + batteries[3] +
+                    "\n\t}" +
+                ", \nacceleration=" + acceleration +
+                ", \ncoordinates=" + Arrays.toString(coordinates) +
+                ", \nheartRate=" + heartRate +
+                ", \ntechnique=" + technique +
+                ", \nsteps=" + steps +
+                ", \nmeans=" +
+                    "\n\t{\n\tbpm=" + means[0] +
+                    "\n\tsteps/min="  + means[1] +
+                    "\n\tacceleration=" + means[2] +
+                    "\n\t}" +
+                "\n}";
     }
 }
